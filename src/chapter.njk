@@ -14,7 +14,7 @@ eleventyComputed:
         description: "A beautiful minimal Bible reading experience."
 ---
 {% macro renderChapter(chapter, withVerseIds = false) %}
-<div id="content" x-data="infiniteScrollContext" class="position-relative d-flex" data-book="{{ chapter.book }}" data-chapter="{{ chapter.chapter }}" data-chapter-slug="{{ chapter.slug }}" data-title="{{ title }}" data-next-chapter="{{ chapter.nextChapter }}" data-prev-chapter="{{ chapter.prevChapter }}">
+<div id="content" x-data="infiniteScrollContext" class="position-relative d-flex" data-book="{{ chapter.book }}" data-chapter="{{ chapter.chapter }}" data-chapter-slug="{{ chapter.slug }}" data-title="Armorer | {{ chapter.book }} {{ chapter.chapter }}" data-next-chapter="{{ chapter.nextChapter }}" data-prev-chapter="{{ chapter.prevChapter }}">
     <div x-intersect="chapterIntersected('{{ chapter.slug }}');" x-intersect.full="chapterIntersected('{{ chapter.slug }}', true);" class="pe-none position-absolute top-0 start-0 end-0" style="height: 50vh;"></div>
     <main class="container">
         <header class="sticky-top">
