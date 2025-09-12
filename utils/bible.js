@@ -88,7 +88,16 @@ function generateIndexes() {
         const book = parsedReference.book.name;
         const chapter = parsedReference.chapter;
         const verse = parsedReference.from;
-        acc[`${book} ${chapter}:${verse}`] = cleanText(content);
+        const verseKey = `${book} ${chapter}:${verse}`;
+        
+        // Enhanced structure with book information for easier filtering
+        acc[verseKey] = {
+            content: cleanText(content),
+            book: slugify(book, { lower: true }),
+            chapter: chapter,
+            verse: verse,
+            title: verseKey
+        };
         return acc;
     }, {});
 
