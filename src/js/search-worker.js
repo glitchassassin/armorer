@@ -3,7 +3,7 @@ import * as JsSearch from 'js-search';
 import { stemmer } from 'porter-stemmer';
 import chapterAndVerse from 'chapter-and-verse';
 
-const searchIndex = fetch(`./verses.json`)
+const searchIndex = fetch(`./verses.json?bust-cache-1`)
     .then(r => r.json())
     .then(verses => {
         const search = new JsSearch.Search('title');

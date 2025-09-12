@@ -28,6 +28,19 @@ module.exports = function(eleventyConfig) {
         terser(),
       ]
     },
+    resolveName(filePath) {
+      const crypto = require('crypto');
+      const fs = require('fs');
+      const hash = crypto.createHash('sha256');
+      const path = require('path');
+      
+      // Read file contents and hash them
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      hash.update(fileContents);
+      const fileHash = hash.digest('hex');
+      const parsedPath = path.parse(filePath);
+      return `${parsedPath.name}-${fileHash.slice(0, 6)}.js`;
+    }
   });
   eleventyConfig.addPlugin(rollupPlugin, {
     scriptGenerator: (filename) => filename, // do not add <script> tags
@@ -49,6 +62,19 @@ module.exports = function(eleventyConfig) {
         terser(),
       ]
     },
+    resolveName(filePath) {
+      const crypto = require('crypto');
+      const fs = require('fs');
+      const hash = crypto.createHash('sha256');
+      const path = require('path');
+      
+      // Read file contents and hash them
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      hash.update(fileContents);
+      const fileHash = hash.digest('hex');
+      const parsedPath = path.parse(filePath);
+      return `${parsedPath.name}-${fileHash.slice(0, 6)}.js`;
+    }
   });
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
   eleventyConfig.addPassthroughCopy("src/img");
