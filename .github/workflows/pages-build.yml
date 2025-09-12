@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
       with:
-        node-version: 16
+        node-version: 22
         cache: 'npm'
     - name: apt install with cache
-      uses: awalsh128/cache-apt-pkgs-action@v1.2.2
+      uses: awalsh128/cache-apt-pkgs-action@v1.5.3
       with:
         # Space delimited list of packages to install.
         packages: build-essential nodejs npm libcurl4-gnutls-dev libicu-dev zlib1g-dev pkg-config cmake subversion
@@ -30,7 +30,7 @@ jobs:
     - name: Build the site
       run: npm run build
     - name: Upload GitHub Pages artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v4
 
   # Deploy job
   deploy:
