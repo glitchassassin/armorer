@@ -64,8 +64,9 @@ eleventyComputed:
                   <span class="d-none d-sm-inline px-3">Armorer</span>
                 </a>
                 </div>
-              <div class="col">
+              <div class="col position-relative">
                   <input 
+                    id="search"
                     type="search" 
                     class="form-control" 
                     placeholder="Search/Go to..." 
@@ -78,6 +79,15 @@ eleventyComputed:
                     "
                     x-model="query" 
                   />
+                  <button 
+                    type="button"
+                    class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y book-filter-btn"
+                    style="--bs-btn-padding-y: .1rem; --bs-btn-padding-x: .1rem; --bs-btn-font-size: .75rem;"
+                    @click="addBookFilter()"
+                    title="Add book filter"
+                  >
+                    book:
+                  </button>
               </div>
           </div>
       </header>

@@ -33,6 +33,25 @@ document.addEventListener('alpine:init', () => {
 
             window.location.href = url;
         },
+        /**
+         * Add 'book:' filter to the current query
+         */
+        addBookFilter() {
+            if (!this.query.includes('book:')) {
+                this.query = `${this.query} book:`.trim();
+                this.setLocationQuery(this.query);
+                this.getReferenceResults(this.query);
+                this.getSearchResults(this.query);
+            }
+            // Re-focus the search input and position cursor at the end
+            const searchInput = document.querySelector('#search');
+            if (searchInput) {
+                searchInput.focus();
+                // Position cursor at the end of the input
+                const length = searchInput.value.length;
+                searchInput.setSelectionRange(length, length);
+            }
+        },
         query: new URLSearchParams(window.location.search).get('q') ?? '',
         setLocationQuery(query) {
             const url = new URL(window.location);
