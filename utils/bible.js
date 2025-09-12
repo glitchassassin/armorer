@@ -13,6 +13,7 @@ const parseItalics = (text) => text.replace(/\[(.+?)\]/g, '<em>$1</em>')
 const parseParagraphs = (text) => text.replace(/# ?/g, '')
 const smallcapsLord = (text) => text.replace(/LORD'S/g, '<span style="font-variant-caps: small-caps">Lord\'s</span>').replace(/LORD/g, '<span style="font-variant-caps: small-caps">Lord</span>')
 const theirs = (text) => text.replace(/their's/g, 'theirs')
+const yours = (text) => text.replace(/your's/g, 'yours')
 const trim = (text) => text.trim()
 
 const wrapVerse = (text, verse) => ({ verse, text })
@@ -23,6 +24,7 @@ function cleanText(text) {
         parseItalics,
         smallcapsLord,
         theirs,
+        yours,
         trim
     ]
     return mappers.reduce((text, fn) => fn(text), text)
