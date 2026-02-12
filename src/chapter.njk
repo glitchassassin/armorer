@@ -17,9 +17,8 @@ eleventyComputed:
 <div id="content" x-data="infiniteScrollContext" class="position-relative d-flex" data-book="{{ chapter.book }}" data-chapter="{{ chapter.chapter }}" data-chapter-slug="{{ chapter.slug }}" data-title="Armorer | {{ chapter.book }} {{ chapter.chapter }}" data-next-chapter="{{ chapter.nextChapter }}" data-prev-chapter="{{ chapter.prevChapter }}">
     <div x-intersect="chapterIntersected('{{ chapter.slug }}');" x-intersect.full="chapterIntersected('{{ chapter.slug }}', true);" class="pe-none position-absolute top-0 start-0 end-0" style="height: 50vh;"></div>
     <main class="container">
-        <header class="sticky-top">
-            <!-- this nested div is a hack to fix 1px gap with sticky header -->
-            <div class="bg-dark fw-bold p-2 position-relative" style="top: -2px;">
+        <header class="sticky-top bg-dark" style="top: -1px; padding-top: 1px;">
+            <div class="fw-bold p-2">
                 <a href="{{bible.books[chapter.book].slug}}" class="link-light">{{ bible.books[chapter.book].title }}</a>
                 &nbsp;⟫&nbsp;
                 <a href="{{chapter.slug}}" class="link-light">Chapter {{ chapter.chapter }}</a>
