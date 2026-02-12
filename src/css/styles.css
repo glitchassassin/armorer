@@ -61,6 +61,15 @@ body {
 }
 
 /**
+ * Prevent sub-pixel gap between search header and scroll container on iOS
+ */
+#site-wrapper>header {
+    position: relative;
+    z-index: 1030;
+    box-shadow: 0 2px 0 0 var(--bs-body-bg, #212529);
+}
+
+/**
  * Table of Contents
  */
 
