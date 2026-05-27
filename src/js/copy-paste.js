@@ -71,7 +71,7 @@ function groupSelectedVerses(verseElements) {
         const reference = verseReference(verseElement);
         const previous = groups[groups.length - 1];
 
-        if (!previous || previous.from.chapterSlug !== reference.chapterSlug) {
+        if (!previous || previous.from.book !== reference.book) {
             groups.push({
                 from: reference,
                 to: reference,
