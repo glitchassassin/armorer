@@ -1,22 +1,138 @@
-import chapterAndVerse from "chapter-and-verse";
+import baseUrl from "./base-url";
 
-function mergeReferences(from, to) {
-    const fromRef = chapterAndVerse(from);
-    const toRef = chapterAndVerse(to);
+function verseText(verseElement) {
+    const clone = verseElement.cloneNode(true);
+    clone.querySelectorAll('.verse-no').forEach(e => e.remove());
+    return clone.textContent.trim();
+}
 
-    console.log(from, to, fromRef, toRef);
+function verseReference(verseElement) {
+    const chapter = verseElement.closest('[data-chapter]');
 
-    if (!fromRef.success || !toRef.success) return "";
+    return {
+        book: chapter.dataset.book,
+        chapter: chapter.dataset.chapter,
+        chapterSlug: chapter.dataset.chapterSlug,
+        verse: Number.parseInt(verseElement.dataset.verse, 10),
+    };
+}
 
-    if (fromRef.book.id !== toRef.book.id) {
-        return `${fromRef.book.name} ${fromRef.chapter}:${fromRef.from} - ${toRef.book.name} ${toRef.chapter}:${toRef.to}`;
-    } else if (fromRef.chapter !== toRef.chapter) {
-        return `${fromRef.book.name} ${fromRef.chapter}:${fromRef.from} - ${toRef.chapter}:${toRef.to}`;
-    } else if (fromRef.from !== toRef.to) {
-        return `${fromRef.book.name} ${fromRef.chapter}:${fromRef.from}-${toRef.to}`;
-    } else {
-        return `${fromRef.book.name} ${fromRef.chapter}:${fromRef.from}`;
+function referenceTitle(group) {
+    const from = group.from;
+    const to = group.to;
+
+    if (from.book !== to.book) return `${from.book} ${from.chapter}:${from.verse} - ${to.book} ${to.chapter}:${to.verse}`;
+    if (from.chapter !== to.chapter) return `${from.book} ${from.chapter}:${from.verse}-${to.chapter}:${to.verse}`;
+    if (from.verse === to.verse) return `${from.book} ${from.chapter}:${from.verse}`;
+    return `${from.book} ${from.chapter}:${from.verse}-${to.verse}`;
+}
+
+function referenceUrl(group) {
+    const from = group.from;
+    const to = group.to;
+    if (from.book !== to.book) return undefined;
+
+    let hash = `#${from.verse}`;
+
+    if (from.chapter !== to.chapter) {
+        hash = `#${from.verse}-${to.chapter}_${to.verse}`;
+    } else if (from.verse !== to.verse) {
+        hash = `#${from.verse}-${to.verse}`;
     }
+
+    return new URL(`${baseUrl()}${from.chapterSlug}${hash}`, window.location.origin).toString();
+}
+
+function referenceLink(group) {
+    const title = referenceTitle(group);
+    const url = referenceUrl(group);
+
+    return url ? `[${title}](${url})` : title;
+}
+
+function selectedVerseElements(selection) {
+    const elements = [];
+    const seen = new Set();
+
+    for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++) {
+        const range = selection.getRangeAt(rangeIndex);
+        document.querySelectorAll('[data-chapter-slug] .verse').forEach((verseElement) => {
+            if (!range.intersectsNode(verseElement) || seen.has(verseElement)) return;
+            seen.add(verseElement);
+            elements.push(verseElement);
+        });
+    }
+
+    return elements;
+}
+
+function groupSelectedVerses(verseElements) {
+    return verseElements.reduce((groups, verseElement) => {
+        const reference = verseReference(verseElement);
+        const previous = groups[groups.length - 1];
+
+        if (!previous || previous.from.chapterSlug !== reference.chapterSlug) {
+            groups.push({
+                from: reference,
+                to: reference,
+                verses: [verseElement],
+            });
+        } else {
+            previous.to = reference;
+            previous.verses.push(verseElement);
+        }
+
+        return groups;
+    }, []);
+}
+
+function partialSelectionText(selection) {
+    const text = [];
+    let reference;
+
+    for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++) {
+        const range = selection.getRangeAt(rangeIndex);
+        const contents = range.cloneContents();
+
+        const fromNode = range.startContainer;
+        const fromElement = fromNode.nodeType === Node.TEXT_NODE ? fromNode.parentElement : fromNode;
+        const fromVerse = fromElement.closest('[data-verse]');
+        if (!fromVerse) continue;
+        const toNode = range.endContainer;
+        const toElement = toNode.nodeType === Node.TEXT_NODE ? toNode.parentElement : toNode;
+        const toVerse = toElement.closest('[data-verse]') ?? fromVerse;
+
+        reference ??= {
+            from: verseReference(fromVerse),
+            to: verseReference(fromVerse),
+        };
+        reference.to = verseReference(toVerse);
+
+        contents.querySelectorAll('.verse-no').forEach(e => e.remove());
+        text.push(contents.textContent.trim());
+    }
+
+    if (reference) text.push(referenceLink({ ...reference, verses: [] }));
+
+    return text.filter(t => t !== "").join("\n");
+}
+
+function fullVerseSelectionText(selection) {
+    let containsWholeVerse = false;
+    for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++) {
+        if (selection.getRangeAt(rangeIndex).cloneContents().querySelector('.verse')) {
+            containsWholeVerse = true;
+        }
+    }
+    if (!containsWholeVerse) return partialSelectionText(selection);
+
+    const verseElements = selectedVerseElements(selection);
+    if (verseElements.length === 0) return partialSelectionText(selection);
+
+    return groupSelectedVerses(verseElements).map((group) => [
+        group.verses.map(verseText).join("\n"),
+        referenceLink(group),
+    ].filter(t => t !== "").join("\n")).join("\n");
 }
 
 function initializeCopyPaste() {
@@ -26,43 +142,11 @@ function initializeCopyPaste() {
         // check if anchorNode is in a chapter
         if (!selection.anchorNode.parentElement.closest('[data-chapter]')) return;
 
-        // get just the verse text
-        const text = [];
-        let reference;
-        for (let range = 0; range < selection.rangeCount; range++) {
-            const contents = selection.getRangeAt(range).cloneContents()
-
-            const fromNode = selection.getRangeAt(range).startContainer;
-            const fromElement = fromNode.nodeType === Node.TEXT_NODE ? fromNode.parentElement : fromNode;
-            const fromBook = fromElement.closest('[data-book]').dataset.book;
-            const fromChapter = fromElement.closest('[data-chapter]').dataset.chapter;
-            const fromVerse = fromElement.closest('[data-verse]').dataset.verse;
-            const toNode = selection.getRangeAt(range).endContainer;
-            const toElement = toNode.nodeType === Node.TEXT_NODE ? toNode.parentElement : toNode;
-            const toBook = toElement.closest('[data-book]').dataset.book;
-            const toChapter = toElement.closest('[data-chapter]').dataset.chapter;
-            const toVerse = toElement.closest('[data-verse]').dataset.verse;
-
-            reference ??= `${fromBook} ${fromChapter}:${fromVerse}`
-            reference = mergeReferences(reference, `${toBook} ${toChapter}:${toVerse}`);
-
-            const verses = contents.querySelectorAll('.verse');
-            if (verses.length !== 0) {
-                // strip out verse numbers
-                verses.forEach(v => {
-                    v.querySelectorAll('.verse-no').forEach(e => e.remove())
-                    text.push(v.textContent.trim());
-                })
-            } else {
-                // partial verse without verse numbers
-                text.push(contents.textContent.trim());
-            }
-        }
-
-        if (reference) text.push(reference);
+        const text = fullVerseSelectionText(selection);
+        if (!text) return;
 
         // update the clipboard
-        event.clipboardData.setData('text/plain', text.filter(t => t !== "").join("\n"));
+        event.clipboardData.setData('text/plain', text);
         event.preventDefault();
     });
 }

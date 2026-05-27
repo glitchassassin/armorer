@@ -1,6 +1,8 @@
+import { applyVerseFocus, initializeVerseFocus } from "./verse-focus";
+
 let interval;
 
-window.addEventListener('hashchange', (event) => {
+function waitForVisibleContent(fn) {
     if (interval) clearInterval(interval);
     interval = setInterval(() => {
         // wait until site-content is visible again; otherwise,
@@ -9,15 +11,12 @@ window.addEventListener('hashchange', (event) => {
         if (siteContent.style.display === 'none') return;
         clearInterval(interval);
 
-        const [path, hash] = event.newURL.split('#');
-        if (!hash) return;
-
-        const url = new URL(path);
-
-        const chapter = url.pathname;
-
-        const element = document.querySelector(`[data-chapter-slug="${chapter}"]`)?.querySelector(`[data-verse="${hash}"] .verse-no`);
-
-        if (element) element.scrollIntoView();
+        fn();
     }, 100);
+}
+
+initializeVerseFocus();
+
+window.addEventListener('hashchange', () => {
+    waitForVisibleContent(() => applyVerseFocus());
 })

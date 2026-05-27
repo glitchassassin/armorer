@@ -138,6 +138,15 @@ ul.toc a {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+#site-content:has(.verse-focused) .verse {
+    opacity: 0.35;
+    transition: opacity 150ms ease;
+}
+
+#site-content:has(.verse-focused) .verse-focused {
+    opacity: 1;
+}
+
 .logo {
     background-image: url('/img/book_white.png');
     background-size: contain;
