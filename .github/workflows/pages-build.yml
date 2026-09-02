@@ -1,4 +1,4 @@
-name: Eleventy Build & Pages Deploy
+name: Vite PWA Build & Pages Deploy
 
 on:
   push:
@@ -20,12 +20,14 @@ jobs:
         cache: 'npm'
     - name: install dependencies
       run: npm ci
-    - name: render Bible
-      run: npm run generate:kjv
-    - name: Build the site
+    - name: Run unit tests and type checking
+      run: npm test && npm run typecheck
+    - name: Build the PWA and translation packages
       run: npm run build
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v4
+      with:
+        path: dist
 
   # Deploy job
   deploy:
