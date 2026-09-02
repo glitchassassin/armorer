@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "kjv",
+  "name": "King James Version",
+  "shortName": "KJV",
+  "siteName": "Armorer",
+  "tagline": "A beautiful minimal web reader for the King James Version of the Bible.",
+  "contentVersion": "kjv-1769.1",
+  "searchVersion": "kjv-search.2",
+  "searchAnalyzer": "porter-en",
+  "baseUrl": "/",
+  "language": "en",
+  "license": "Public domain",
+  "attribution": "King James Version, standardized 1769 text",
+  "source": {
+    "adapter": "../scripts/source-adapters/kjv-node-module.mjs",
+    "module": "kjv/json/verses-1769.json",
+    "sourceBookNames": {"Song of Solomon": ["Solomon's Song"]}
+  },
+  "canon": "./protestant-66.json",
+  "cname": "armorer.io"
+}

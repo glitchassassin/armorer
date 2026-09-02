@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "id": "example-kjv",
+  "name": "Example Translation Build",
+  "shortName": "EXAMPLE",
+  "siteName": "Armorer Example",
+  "tagline": "An example independently scoped Armorer translation build.",
+  "contentVersion": "example.1",
+  "searchVersion": "example-search.1",
+  "searchAnalyzer": "porter-en",
+  "baseUrl": "/example/",
+  "language": "en",
+  "license": "Public domain",
+  "attribution": "Example build using the King James Version source",
+  "source": {
+    "adapter": "../scripts/source-adapters/kjv-node-module.mjs",
+    "module": "kjv/json/verses-1769.json",
+    "sourceBookNames": {"Song of Solomon": ["Solomon's Song"]}
+  },
+  "canon": "./protestant-66.json"
+}
