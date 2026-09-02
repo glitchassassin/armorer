@@ -1,5 +1,12 @@
 node_modules
 _site
+dist
+test-results
+playwright-report
+public/data
+public/icons
+public/site.webmanifest
+public/CNAME
 src/_data/bible.json
 src/js/*.json
 .sword
