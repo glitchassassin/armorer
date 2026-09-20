@@ -72,7 +72,7 @@ export default defineConfig(({ command }) => {
     ],
     build: {
       manifest: true,
-      target: ['es2022', 'chrome109', 'firefox115', 'safari16.4'],
+      target: ['es2022', 'chrome122', 'edge122', 'firefox128', 'safari18', 'ios18'],
       rollupOptions: {
         output: {
           assetFileNames: 'assets/[name]-[hash][extname]',

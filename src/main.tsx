@@ -2,6 +2,7 @@ import { hydrate, prerender as renderToString } from 'preact-iso';
 import { App } from './App';
 import type { TranslationMetadata } from './lib/types';
 import { withBase } from './lib/urls';
+import './theme.css';
 import './styles.css';
 
 const initialMetadata = __ARMORER_PRERENDER_METADATA__ ?? undefined;

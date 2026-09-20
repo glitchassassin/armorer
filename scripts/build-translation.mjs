@@ -219,8 +219,9 @@ await writeFile(resolve(output, 'site.webmanifest'), JSON.stringify({
   start_url: basePath,
   scope: basePath,
   display: 'standalone',
-  background_color: '#212529',
-  theme_color: '#212529',
+  // Installed-app launch colors are static; use the default light palette.
+  background_color: '#faf7f0',
+  theme_color: '#faf7f0',
   icons: manifestIcons
 }, null, 2));
 
