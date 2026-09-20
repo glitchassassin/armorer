@@ -26,5 +26,5 @@ This file records differences that are deliberate. Behavior not listed here shou
 - Keep the combined Credits and offline-status footer.
 - Do not impose a minimum chapter height.
 - Add semantic structure, keyboard focus treatment, restrained live status announcements, reduced-motion support, and other accessibility improvements without changing the established visual language.
-- Follow the system light/dark preference with a warm light background and a dark palette based on the published theme. Derive surfaces, text variants, borders, and blue accents from shared base colors using native relative OKLCH lightness calculations. Require Chrome/Edge 122, Firefox 128, or Safari/iOS 18 or later; do not provide legacy color fallbacks.
+- Follow the system light/dark preference with a warm light background and a dark palette based on the published theme. Derive surfaces, text variants, borders, and blue accents from shared base colors using native OKLCH with explicit channel variables and calculated lightness. Require Chrome/Edge 122, Firefox 128, or Safari/iOS 18 or later; do not provide legacy color fallbacks.
 - Otherwise preserve Merriweather typography, spacing, header/search layout, sticky chapter headings, verse numbers, highlights, table-of-contents layout, and responsive behavior.

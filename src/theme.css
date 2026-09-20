@@ -1,20 +1,29 @@
-/* Native OKLCH palette. Derived colors retain the base hue and chroma. */
+/* Explicit OKLCH channels keep lightness variants independent of relative-color conversion. */
 :root {
-  --background: oklch(0.976520 0.009800 87.4704);
-  --text: oklch(0.345143 0.013291 248.2124);
-  --accent: oklch(0.491707 0.190377 259.7989);
+  --background-l: 0.976520;
+  --background-c: 0.009800;
+  --background-h: 87.4704;
+  --background: oklch(var(--background-l) var(--background-c) var(--background-h));
+  --text-l: 0.345143;
+  --text-c: 0.013291;
+  --text-h: 248.2124;
+  --text: oklch(var(--text-l) var(--text-c) var(--text-h));
+  --accent-l: 0.491707;
+  --accent-c: 0.190377;
+  --accent-h: 259.7989;
+  --accent: oklch(var(--accent-l) var(--accent-c) var(--accent-h));
 
-  --surface: oklch(from var(--background) calc(l - 0.025) c h);
-  --surface-strong: oklch(from var(--background) calc(l - 0.055) c h);
-  --border: oklch(from var(--text) calc(l + 0.21) c h);
-  --control-border: oklch(from var(--text) calc(l + 0.3) c h);
-  --muted: oklch(from var(--text) calc(l + 0.08) c h);
-  --muted-subtle: oklch(from var(--text) calc(l + 0.17) c h);
-  --heading: oklch(from var(--text) calc(l - 0.08) c h);
+  --surface: oklch(calc(var(--background-l) - 0.025) var(--background-c) var(--background-h));
+  --surface-strong: oklch(calc(var(--background-l) - 0.055) var(--background-c) var(--background-h));
+  --border: oklch(calc(var(--text-l) + 0.21) var(--text-c) var(--text-h));
+  --control-border: oklch(calc(var(--text-l) + 0.3) var(--text-c) var(--text-h));
+  --muted: oklch(calc(var(--text-l) + 0.08) var(--text-c) var(--text-h));
+  --muted-subtle: oklch(calc(var(--text-l) + 0.17) var(--text-c) var(--text-h));
+  --heading: oklch(calc(var(--text-l) - 0.08) var(--text-c) var(--text-h));
   --navigation-text: var(--heading);
-  --verse-number: oklch(from var(--text) calc(l + 0.15) c h);
+  --verse-number: oklch(calc(var(--text-l) + 0.15) var(--text-c) var(--text-h));
   --focus: var(--accent);
-  --active-background: oklch(from var(--accent) calc(l + 0.06) c h);
+  --active-background: oklch(calc(var(--accent-l) + 0.06) var(--accent-c) var(--accent-h));
   --link: var(--accent);
 
   --status-pending: oklch(0.522679 0.107358 83.5798);
@@ -25,20 +34,29 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(0.262093 0.009493 248.1897);
-    --text: oklch(0.769244 0.014518 248.0166);
-    --accent: oklch(0.728703 0.139799 258.0679);
+    --background-l: 0.262093;
+    --background-c: 0.009493;
+    --background-h: 248.1897;
+    --background: oklch(var(--background-l) var(--background-c) var(--background-h));
+    --text-l: 0.769244;
+    --text-c: 0.014518;
+    --text-h: 248.0166;
+    --text: oklch(var(--text-l) var(--text-c) var(--text-h));
+    --accent-l: 0.728703;
+    --accent-c: 0.139799;
+    --accent-h: 258.0679;
+    --accent: oklch(var(--accent-l) var(--accent-c) var(--accent-h));
 
-    --surface: oklch(from var(--background) calc(l + 0.045) c h);
-    --surface-strong: oklch(from var(--background) calc(l + 0.08) c h);
-    --border: oklch(from var(--text) calc(l - 0.21) c h);
-    --control-border: oklch(from var(--text) calc(l - 0.34) c h);
+    --surface: oklch(calc(var(--background-l) + 0.045) var(--background-c) var(--background-h));
+    --surface-strong: oklch(calc(var(--background-l) + 0.08) var(--background-c) var(--background-h));
+    --border: oklch(calc(var(--text-l) - 0.21) var(--text-c) var(--text-h));
+    --control-border: oklch(calc(var(--text-l) - 0.34) var(--text-c) var(--text-h));
     --muted: var(--text);
-    --muted-subtle: oklch(from var(--text) calc(l - 0.11) c h);
-    --heading: oklch(from var(--text) calc(l + 0.2) c h);
+    --muted-subtle: oklch(calc(var(--text-l) - 0.11) var(--text-c) var(--text-h));
+    --heading: oklch(calc(var(--text-l) + 0.2) var(--text-c) var(--text-h));
     --navigation-text: var(--heading);
-    --focus: oklch(from var(--accent) calc(l + 0.08) c h);
-    --active-background: oklch(from var(--accent) calc(l - 0.17) c h);
+    --focus: oklch(calc(var(--accent-l) + 0.08) var(--accent-c) var(--accent-h));
+    --active-background: oklch(calc(var(--accent-l) - 0.17) var(--accent-c) var(--accent-h));
 
     --status-pending: oklch(0.772155 0.128234 83.4177);
     --status-available: oklch(0.692953 0.124799 155.9491);

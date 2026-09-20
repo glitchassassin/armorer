@@ -98,6 +98,6 @@ Search query and page state use `q` and `p` query parameters.
 
 ## Theme palette
 
-Edit `src/theme.css` to adjust the light/dark base colors and relative OKLCH lightness relationships. Vite handles CSS updates directly. Theme colors are calculated by the browser, with no generated palette or fallback declarations. Keep the hexadecimal browser-chrome colors in `index.html` and the installed-app launch color in `scripts/build-translation.mjs` in sync when changing the page backgrounds.
+Edit `src/theme.css` to adjust the light/dark base colors and OKLCH channel values and lightness relationships. Vite handles CSS updates directly. Theme colors are calculated by the browser, with no generated palette or fallback declarations. Keep the hexadecimal browser-chrome colors in `index.html` and the installed-app launch color in `scripts/build-translation.mjs` in sync when changing the page backgrounds.
 
-Supported minimum browsers: Chrome/Edge 122, Firefox 128, and Safari/iOS 18. These targets support the relative OKLCH lightness calculations used by the themes. Older browsers are not supported.
+Supported minimum browsers: Chrome/Edge 122, Firefox 128, and Safari/iOS 18. Theme variants calculate lightness from explicit CSS channel variables, avoiding relative-color conversion differences between browser versions. Older browsers are not supported.

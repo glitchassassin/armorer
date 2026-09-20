@@ -78,3 +78,27 @@ for (const scheme of ['light', 'dark'] as const) {
     }
   });
 }
+
+test('preserves the cool hue of dark text variants', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  const colors = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    document.body.append(probe);
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const context = canvas.getContext('2d')!;
+    const samples = ['heading', 'navigation-text', 'muted-subtle', 'control-border', 'verse-number'].map((token) => {
+      probe.style.color = `var(--${token})`;
+      context.fillStyle = getComputedStyle(probe).color;
+      context.fillRect(0, 0, 1, 1);
+      return { token, rgb: [...context.getImageData(0, 0, 1, 1).data].slice(0, 3) };
+    });
+    probe.remove();
+    return samples;
+  });
+  for (const { token, rgb: [red, green, blue] } of colors) {
+    expect(blue, `${token}: blue exceeds green`).toBeGreaterThan(green);
+    expect(green, `${token}: green exceeds red`).toBeGreaterThan(red);
+  }
+});
