@@ -44,7 +44,45 @@ export function AppBootstrap({ children, initialMetadata }: {
   const [status, setStatus] = useState<OfflineStatus>({
     kind: 'incomplete', saved: 0, total: 1, label: 'Offline content incomplete'
   });
+  const [shellReady, setShellReady] = useState(false);
   const [error, setError] = useState<Error>();
+
+  useEffect(() => {
+    if (!import.meta.env.PROD) {
+      setShellReady(true);
+      return;
+    }
+    if (!('serviceWorker' in navigator) || !('caches' in window)) return;
+    let active = true;
+    const checkShell = async () => {
+      let ready = false;
+      try {
+        const buildId = document.querySelector<HTMLMetaElement>('meta[name="armorer-build"]')?.content;
+        const script = document.querySelector<HTMLScriptElement>('script[type="module"]');
+        const cacheName = `armorer-app-${buildId}`;
+        if (buildId && script?.src && navigator.serviceWorker.controller &&
+          (await caches.keys()).includes(cacheName)) {
+          const cache = await caches.open(cacheName);
+          const indexUrl = new URL('index.html', new URL(import.meta.env.BASE_URL, location.origin));
+          const matchOptions = { ignoreSearch: true, ignoreVary: true };
+          ready = Boolean(await cache.match(indexUrl.href, matchOptions) &&
+            await cache.match(script.src, matchOptions));
+        }
+      } catch {
+        // Missing or inaccessible startup files must not be reported as available offline.
+      }
+      if (active) setShellReady(ready);
+    };
+    void checkShell();
+    void navigator.serviceWorker.ready.then(checkShell);
+    navigator.serviceWorker.addEventListener('controllerchange', checkShell);
+    window.addEventListener('pageshow', checkShell);
+    return () => {
+      active = false;
+      navigator.serviceWorker.removeEventListener('controllerchange', checkShell);
+      window.removeEventListener('pageshow', checkShell);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -67,13 +105,16 @@ export function AppBootstrap({ children, initialMetadata }: {
 
   useEffect(() => synchronizer?.subscribe(setStatus), [synchronizer]);
 
+  const displayedStatus = useMemo<OfflineStatus>(() => status.kind === 'available' && !shellReady
+    ? { ...status, kind: 'incomplete', label: 'Offline startup not ready' }
+    : status, [status, shellReady]);
   const value = useMemo<AppContextValue | undefined>(() => manifest ? {
     repository,
     synchronizer,
     manifest,
-    status,
+    status: displayedStatus,
     ready: Boolean(repository && synchronizer && 'content' in manifest)
-  } : undefined, [repository, synchronizer, manifest, status]);
+  } : undefined, [repository, synchronizer, manifest, displayedStatus]);
 
   if (error) {
     return (

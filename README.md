@@ -69,6 +69,7 @@ Adapters own source parsing, book-name mapping, markup conversion, punctuation c
 ## Offline and update model
 
 - The application shell is pre-cached only after every revisioned asset validates as a successful response.
+- "Available offline" appears only when the shell can start offline and all chapters and search data are saved.
 - Chapters are independently content-addressed. Unchanged chapter files keep their hashes across translation versions.
 - Search is a separate, prebuilt MiniSearch package loaded and queried in a worker.
 - Initial content becomes usable chapter by chapter while background synchronization continues.

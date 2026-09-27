@@ -17,6 +17,7 @@ export function Footer() {
         {status.kind === 'available' ? 'Scripture is available offline' :
           status.kind === 'updating' ? 'Offline scripture is updating' :
           status.kind === 'saving' ? 'Scripture is being saved for offline use' :
+          status.saved === status.total ? 'Offline startup is incomplete' :
           'Offline scripture is incomplete'}
       </span>
     </footer>

@@ -14,12 +14,16 @@ async function filesIn(directory) {
   }))).flat();
 }
 
+function isRuntimeFile(file) {
+  // GitHub Pages does not serve Vite's internal manifest, so it cannot be required for installation.
+  return file !== 'sw.js' && file !== 'CNAME' &&
+    !file.startsWith('.vite/') && !file.startsWith('data/') &&
+    !file.endsWith('/index.html') && !/^assets\/prerender-.*\.js$/.test(file);
+}
+
 const shellFileNames = (await filesIn(dist))
   .map((file) => relative(dist, file).split(sep).join('/'))
-  .filter((file) =>
-    file !== 'sw.js' && file !== '404.html' && !file.startsWith('data/') &&
-    !file.endsWith('/index.html') && !/^assets\/prerender-.*\.js$/.test(file)
-  );
+  .filter((file) => file !== '404.html' && isRuntimeFile(file));
 const buildInputs = await Promise.all(shellFileNames.map(async (file) => {
   const bytes = await readFile(resolve(dist, file));
   return [file, createHash('sha256').update(bytes).digest('hex')];
@@ -43,10 +47,7 @@ await writeFile(resolve(dist, '404/index.html'), fallbackHtml);
 const files = await filesIn(dist);
 const shellFiles = files
   .map((file) => relative(dist, file).split(sep).join('/'))
-  .filter((file) =>
-    file !== 'sw.js' && !file.startsWith('data/') && !file.endsWith('/index.html') &&
-    !/^assets\/prerender-.*\.js$/.test(file)
-  );
+  .filter(isRuntimeFile);
 const revisions = await Promise.all(shellFiles.map(async (file) => {
   const bytes = await readFile(resolve(dist, file));
   return [file, createHash('sha256').update(bytes).digest('hex')];

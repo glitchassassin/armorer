@@ -135,6 +135,33 @@ test('synchronizes the corpus for cold offline reading and search', async ({ pag
   await context.setOffline(false);
 });
 
+test('installed Android shell survives a cold offline launch and reports cache loss', async ({ page, context }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium');
+  test.slow();
+  const worker = await page.request.get('/sw.js');
+  const workerSource = await worker.text();
+  expect(workerSource).not.toContain('./.vite/');
+  expect(workerSource).not.toContain('./CNAME');
+
+  await page.goto('/');
+  await expect(page.getByText('Available offline', { exact: true })).toBeVisible({ timeout: 120_000 });
+  await page.close();
+  await context.setOffline(true);
+  const relaunched = await context.newPage();
+  await relaunched.goto('/');
+  await expect(relaunched.getByRole('heading', { name: 'Armorer', exact: true })).toBeVisible();
+  await expect(relaunched.getByText('Available offline', { exact: true })).toBeVisible();
+
+  await relaunched.evaluate(async () => {
+    await Promise.all((await caches.keys())
+      .filter((name) => name.startsWith('armorer-app-'))
+      .map((name) => caches.delete(name)));
+    window.dispatchEvent(new Event('pageshow'));
+  });
+  await expect(relaunched.getByText('Offline startup not ready', { exact: true })).toBeVisible();
+  await context.setOffline(false);
+});
+
 test('copies scripture text with canonical markdown references', async ({ page }) => {
   await page.goto('/john/3/#16-18');
   await expect(page.locator('.verse-focused')).toHaveCount(3);

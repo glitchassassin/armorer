@@ -11,7 +11,10 @@ hydrate(<App initialMetadata={initialMetadata} />, typeof document === 'undefine
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL });
+    void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, {
+      scope: import.meta.env.BASE_URL,
+      updateViaCache: 'none'
+    }).catch((error) => console.error('Offline startup could not be installed', error));
   });
 }
 
