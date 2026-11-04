@@ -1,3 +1,4 @@
+
 import { useApp } from '../app-context';
 import { Footer } from '../components/Footer';
 import { useDocumentTitle } from '../lib/document-title';
@@ -16,8 +17,6 @@ export function Home() {
         <img src={logo} width="100" height="100" alt="" />
         <h1>{manifest.translation.siteName}</h1>
         <p>{manifest.translation.tagline}</p>
-        <p>No ads, commentaries, notes, or distractions. Just the Bible.</p>
-        <p>View the <a href="https://github.com/glitchassassin/armorer">source code</a> or <a href="https://github.com/glitchassassin/armorer/issues">report issues</a> on GitHub.</p>
       </section>
       <hr />
       <TableOfContents title="Old Testament" books={oldBooks} />
