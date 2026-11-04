@@ -10,7 +10,7 @@
     "start": "npm run dev",
     "build:app": "vite build",
     "build:sw": "node scripts/build-service-worker.mjs",
-    "build": "npm run prepare:data && npm run build:app && npm run build:sw",
+    "build": "npm run prepare:data && node scripts/build-sitemap.mjs && npm run build:app && npm run build:sw",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
