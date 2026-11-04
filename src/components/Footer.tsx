@@ -1,14 +1,10 @@
+
 import { useApp } from '../app-context';
 
 export function Footer() {
-  const { manifest, status } = useApp();
+  const { status } = useApp();
   return (
     <footer class="home-footer">
-      <div>
-        <h2>Credits</h2>
-        <p>{manifest.translation.attribution}. {manifest.translation.license}.</p>
-        <a href="https://www.flaticon.com/free-icons/study">Study icons created by Freepik — Flaticon</a>
-      </div>
       <p class={`offline-status status-${status.kind}`}>
         <span aria-hidden="true" class="status-dot" />
         {status.label}
