@@ -41,3 +41,4 @@ ${urls.map((url) => `  <url><loc>${url}</loc></url>`).join('\n')}
 await writeFile(resolve(output, 'sitemap.xml'), sitemap, 'utf8');
 
 console.log(`Generated sitemap with ${urls.length} URLs`);
+await writeFile(resolve(output, 'ads.txt'), await readFile(resolve(root, 'ads.txt')));
