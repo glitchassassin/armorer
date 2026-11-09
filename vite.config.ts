@@ -1,3 +1,4 @@
+
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
@@ -35,7 +36,13 @@ export default defineConfig(({ command }) => {
           enabled: prerenderEnabled,
           renderTarget: '#app',
           prerenderScript: resolve('src/main.tsx'),
-          additionalPrerenderRoutes: metadata?.books.map((book: { slug: string }) => `/${book.slug}/`),
+          additionalPrerenderRoutes: metadata?.books.flatMap((book: { slug: string; chapterCount: number }) => [
+            `/${book.slug}/`,
+            ...Array.from(
+              { length: book.chapterCount },
+              (_, index) => `/${book.slug}/${index + 1}/`
+            )
+          ]),
           previewMiddlewareEnabled: false,
           previewMiddlewareFallback: '/404'
         }
